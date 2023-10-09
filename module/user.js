@@ -16,7 +16,7 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-UserSchema.pre("save", async (next) => {
+UserSchema.pre("save", async function (next) {
   const salt = await bcript.genSalt();
   this.pass = await bcript.hash(this.pass, salt);
   next();
