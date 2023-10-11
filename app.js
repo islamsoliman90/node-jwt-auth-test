@@ -13,7 +13,7 @@ app.use(cookieparser());
 app.set("view engine", "ejs");
 // database connection
 const dbURI =
-  "mongodb+srv://islam1234:test1234@nodeexpressprojects.ihvra5o.mongodb.net/?retryWrites=true&w=majority";
+  "mongodb+srv://islam1234:test1234@nodeexpressprojects.ihvra5o.mongodb.net/JWT_NodeJS?retryWrites=true&w=majority";
 mongoose
   .connect(dbURI, {
     useNewUrlParser: true,
@@ -30,9 +30,3 @@ mongoose
 app.get("/", (req, res) => res.render("home"));
 app.get("/smoothies", (req, res) => res.render("smoothies"));
 app.use(router);
-
-// cookies;
-app.get("/add-cookie", (req, res) => {
-  res.cookie("test", "yes");
-  res.send("you tooo");
-});

@@ -1,4 +1,6 @@
+// const express = require("express");
 const User = require("../module/user");
+const Jwt = require("jsonwebtoken");
 
 const handle_erros = (err) => {
   console.log(err.message, err.code);
@@ -13,6 +15,10 @@ const handle_erros = (err) => {
   }
   return errors;
 };
+maxAge = 3 * 24 * 60 * 60;
+const creatToken = (id) => {
+  return Jwt.sign({ id }, "happy pizza", { expiresIn: maxAge });
+};
 module.exports.Get_login = (req, res) => {
   res.render("login");
 };
@@ -23,15 +29,24 @@ module.exports.post_signUp = async (req, res) => {
   const { email, pass } = req.body;
   try {
     const user = await User.create({ email, pass });
-    res.status(201).json(user);
+    const token = creatToken(user._id);
+    res.cookie("Jwt", token, { maxAge: maxAge * 1000, httpOnly: true });
+    res.status(201).json({ user: user._id });
   } catch (err) {
     let errors = handle_erros(err);
-    res.status(400).json(errors);
+    res.status(400).json({ errors });
   }
 };
 
 module.exports.post_login = async (req, res) => {
   const { email, pass } = req.body;
-  console.log(email, pass);
-  res.send("user login");
+  try {
+    const user = await User.login(email, pass);
+    const token = creatToken(user._id);
+    res.cookie("Jwt", token, { maxAge: maxAge * 1000, httpOnly: true });
+    res.status(200).json({ user: user._id });
+  } catch (err) {
+    const errors = handle_erros(err);
+    res.status(400).json({ errors });
+  }
 };
