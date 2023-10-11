@@ -8,6 +8,12 @@ const handle_erros = (err) => {
   if (err.code === 11000) {
     errors.email = "the email is existed";
   }
+  if (err.message == "incorrect email") {
+    errors.email = "email is not registered".toUpperCase();
+  }
+  else if (err.message == "incorrect pass") {
+     errors.pass = "password is not registered".toUpperCase();
+   }
   if (err.message.includes("validation failed")) {
     Object.values(err.errors).forEach(({ properties }) => {
       errors[properties.path] = properties.message;
@@ -24,6 +30,10 @@ module.exports.Get_login = (req, res) => {
 };
 module.exports.Get_SignUp = (req, res) => {
   res.render("signup");
+};
+module.exports.Get_logout = (req, res) => {
+ res.cookie("Jwt","",{maxAge:1})
+ res.redirect("/")
 };
 module.exports.post_signUp = async (req, res) => {
   const { email, pass } = req.body;

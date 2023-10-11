@@ -24,7 +24,7 @@ UserSchema.pre("save", async function (next) {
 UserSchema.statics.login = async function (email, pass) {
   const user = await this.findOne({ email });
   if (user) {
-    const auth = bcript.compare(pass, user.pass);
+    const auth = await bcript.compare(pass, user.pass);
     if (auth) {
       return user;
     }
